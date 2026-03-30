@@ -12,8 +12,14 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->api('web');
+        //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
-        //
+        $exceptions->render(function (\Illuminate\Auth\AuthenticationException $e, \Illuminate\Http\Request $request) {
+            if ($request->expectsJson()) {
+                return response()->json([
+                    'message' => 'غير مصرح. يجب تسجيل الدخول أولاً.'
+                ], 401);
+            }
+        });
     })->create();
