@@ -12,7 +12,12 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        //
+
+        $middleware->alias([
+            'scopes' => \Laravel\Passport\Http\Middleware\CheckTokenForAnyScope::class,
+            'scope' => \Laravel\Passport\Http\Middleware\CheckToken::class,
+        ]);
+
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (\Illuminate\Auth\AuthenticationException $e, \Illuminate\Http\Request $request) {

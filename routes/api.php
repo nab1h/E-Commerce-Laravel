@@ -11,7 +11,10 @@ use Illuminate\Support\Facades\Route;
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/products', [ProductsController::class, 'show']);
+Route::get('/products/{id}', [ProductsController::class, 'showId']);
 Route::get('/categories', [CategoriesController::class, 'show']);
+
+
 
 // Any authenticated user
 Route::middleware('auth:api')->group(function () {
@@ -19,12 +22,21 @@ Route::middleware('auth:api')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
 });
 
-// Admin only
+// Admin
 Route::middleware(['auth:api', 'scope:admin'])->group(function () {
-
+Route::post('/products', [ProductsController::class, 'store']);
 });
 
 // Admin + Super Admin
-Route::middleware(['auth:api', 'scopes:admin,super_admin'])->group(function () {
+Route::middleware(['auth:api', 'scope:admin,super_admin'])->group(function () {
+
+
+
+
+
+});
+
+// Super Admin
+Route::middleware(['auth:api', 'scope:super_admin'])->group(function () {
 
 });

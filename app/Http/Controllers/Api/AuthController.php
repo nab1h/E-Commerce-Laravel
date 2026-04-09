@@ -30,7 +30,7 @@ class AuthController extends Controller
         $token = $user->createToken('Personal Access Token', [$user->role])->accessToken;
 
         return response()->json([
-            'message' => 'تم التسجيل بنجاح',
+            'message' => 'signin successfully',
             'user' => $user,
             'token' => $token,
         ], 201);
@@ -48,15 +48,33 @@ class AuthController extends Controller
 
         if (!Auth::attempt($request->only('email', 'password'))) {
             throw ValidationException::withMessages([
-                'email' => ['بيانات الدخول غير صحيحة'],
+                'email' => ['data sign success'],
             ]);
         }
         /** @var \App\Models\User $user */
         $user = Auth::user();
-        $token = $user->createToken('Personal Access Token')->accessToken;
+        switch ($user->role) {
+            case 'super_admin':
+                //  Super Admin:(admin + super_admin)
+                $scope = ['admin', 'super_admin'];
+                break;
 
+            case 'admin':
+                //  Admin: (admin)
+                $scope = ['admin'];
+                break;
+
+            case 'user':
+            default:
+                //  User : (user)
+                $scope = ['user'];
+                break;
+        }
+
+
+        $token = $user->createToken('Personal Access Token', $scope)->accessToken;
         return response()->json([
-            'message' => 'تم تسجيل الدخول بنجاح',
+            'message' => 'done signin successfully',
             'user' => $user,
             'token' => $token,
         ],201);
@@ -70,7 +88,7 @@ class AuthController extends Controller
         $request->user()->token()->revoke();
 
         return response()->json([
-            'message' => 'تم تسجيل الخروج بنجاح',
+            'message' => 'done logout successfully',
         ]);
     }
 
