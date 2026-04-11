@@ -24,19 +24,13 @@ Route::middleware('auth:api')->group(function () {
 
 // Admin
 Route::middleware(['auth:api', 'scope:admin'])->group(function () {
-Route::post('/products', [ProductsController::class, 'store']);
+    Route::post('/products', [ProductsController::class, 'store']);
+    Route::put('/products/{id}', [ProductsController::class, 'update']);
+    Route::delete('/products/{id}', [ProductsController::class, 'destroy']);
 });
 
 // Admin + Super Admin
-Route::middleware(['auth:api', 'scope:admin,super_admin'])->group(function () {
-
-
-
-
-
-});
+Route::middleware(['auth:api', 'scope:admin,super_admin'])->group(function () {});
 
 // Super Admin
-Route::middleware(['auth:api', 'scope:super_admin'])->group(function () {
-
-});
+Route::middleware(['auth:api', 'scope:super_admin'])->group(function () {});
